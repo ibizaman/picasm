@@ -301,10 +301,11 @@ that. Raises an error if the resulting file doesn't exist."
   (interactive)
   (unless filename (setf filename (picasm-find-hex-file)))
   (picasm-compare-chips)
-  (if (string-match "Program Succeeded."
-                    (picasm-run-pk2cmd
-                     (concat "-F" (expand-file-name filename)) "-MP"))
-      (message "Chip progamming succeeded")
-    (message "Chip programming failed")))
+  (let ((output (picasm-run-pk2cmd
+                 (concat "-F" (expand-file-name filename)) "-MP")))
+    (if (string-match "Program Succeeded."
+                      output)
+        (message "Chip progamming succeeded")
+      (message "Chip programming failed: %s" output))))
 
 (provide 'picasm-external)
